@@ -12,11 +12,11 @@
 \pgfplotsset{compat=1.14}
 
 \hypersetup{
-    colorlinks,
-    citecolor=black,
-    filecolor=black,
-    linkcolor=black,
-    urlcolor=black
+ colorlinks,
+ citecolor=black,
+ filecolor=black,
+ linkcolor=black,
+ urlcolor=black
 }
 
 \renewcommand{\baselinestretch}{1.15}
@@ -30,19 +30,19 @@
 
 \begin{abstract}
 
-Nowadays the amount of malicious programs is increasing exponentially and the number of victims are very high. For this reason Malware Analysis is a crucial point in Cybersecurity.
+Nowadays the amount of malicious programs is increasing exponentially and the number of victims is very high. For this reason, Malware Analysis is a crucial point in Cybersecurity.
 
-Machine Learning plays a key role in malware analysis beacause it can simplify various processes in several ways. The goal of an analyst is to capture malicious aspects and traits having the broadest scope, and Machine Learning is a natural choice to support this process of knowledge extraction.
+Machine Learning plays a key role in malware analysis because it can simplify various processes in several ways. The goal of an analyst is to capture malicious aspects and traits having the broadest scope, and Machine Learning is a natural choice to support this process of knowledge extraction.
 
-In this project we use Machine Learnig techniques to simplify the problem of Reverse Engineering of a malware. When an analyst has a new malware sample to analyze, the first thing to do is to disassemble it. This permits to the analysist to look at the binary code of all the functions contained inside the malware. The problem is that a human cannot analyze all the code but he try to focus on specific part of the sample that for some reason looks more interesting. But in the most cases malware binaries are often stripped or the string inside a binary can be encrypted. In this scenario, an automated approach is a good way for reverse malware binaries.
+In this project, we use Machine Learning techniques to simplify the problem of Reverse Engineering of malware. When an analyst has a new malware sample to analyze, the first thing to do is to disassemble it. This permits the analyst to look at the binary code of all the functions contained inside the malware. The problem is that a human cannot analyze all the code but he tries to focus on a specific part of the sample that for some reason looks more interesting. But in most cases, malware binaries are often stripped or the string inside a binary can be encrypted. In this scenario, an automated approach is a good way to reverse malware binaries.
 
-There are several problems in binary analysis, one of this is the {\em Compiler Provenance}.
+There are several problems in binary analysis, one of these is the {\em Compiler Provenance}.
 
 {\em Problem}: given the binary code of a function, which are the compiler and the optimization who produced it?
 
 To address this problem, Machine Learning is used with notable results.
 
-In this paper, we will discuss an approach based on {\em Supervised Learnin} and we will try to solve this two classification problems.
+In this paper, we will discuss an approach based on {\em Supervised Learnin} and we will try to solve these two classification problems.
 
 \end{abstract}
 
@@ -51,32 +51,32 @@ We have two problems: {\em Optimization Detection} and {\em Compiler Detection}.
 To solve these problems with Machine Learning we analized a large dataset that is a ".jsonl" file that contains 30000 functions. Each row of the file is a json object like that:
 \begin{quote}
 $\{$
-  \newline
-  {\em "instructions"}: ["xor edx edx", "cmp rdi rsi", "mov eax dword [localch]", "seta dl", "cmovae eax edx", "ret"],
-  \newline
-  {\em "opt"}: "H",
-  \newline
-  {\em "compiler"}: "gcc "
-  \newline
+ \newline
+ {\em "instructions"}: ["xor edx edx", "cmp rdi rsi", "mov eax dword [localch]", "seta dl", "cmovae eax edx", "ret"],
+ \newline
+ {\em "opt"}: "H",
+ \newline
+ {\em "compiler"}: "gcc "
+ \newline
 $\}$
 \end{quote}
 
 The first problem is a Binary Classification problem because we have only two types of optimization: High or Low.
 Instead the second is a Multiclass Classification problem and we have three classes of compiler: gcc, icc, clang.
 
-The compiler distribution is very {\em balanced}, we have 10000 functions per compiler, instead the optimizations distribution
-is {\em unbalanced}, in fact we have 17924 low and 12076 high.
+The compiler distribution is very {\em balanced}, we have 10000 functions per compiler, while the optimizations distribution
+is {\em unbalanced}, we have 17924 low and 12076 high.
 
-What we will see in the following sections is a description of what we did for solve these problems.
+What we will see in the following sections is a description of what we did to solve these problems.
 We will begin by illustrating how we transformed the dataset up to which model we have definitively chosen. By doing this we explored two ways of features extraction and compared three types of models:
 {\em Bernoulli Naive Bayes},
 {\em Multinomial Naive Bayes},
 and finally {\em Support Vector Machine with Linear kernel}.
 
-We worked with {\em Scikit-Learn} that is a simple and efficient Python OpenSource tools for data mining and data analysis.
+We worked with {\em Scikit-Learn} that is a simple and efficient Python OpenSource tool for data mining and data analysis.
 
 \section{Preprocessing}
-The solution we thought is similar to a text analysis, and we based our idea on the Spam Classification Problem.
+The solution we thought is similar to text analysis, and we based our idea on the Spam Classification Problem.
 Therefore we have done some operations to transform the dataset for our purpose. Given a function (equivalent to a row) we have transformed the instruction set into a single string. Such as:
 \begin{quote}
 {\em "instructions"}: ["xor edx edx", "cmp rdi rsi", "mov eax dword [localch]", "seta dl", "cmovae eax edx", "ret"]
@@ -88,7 +88,7 @@ Therefore we have done some operations to transform the dataset for our purpose.
 
 
 \subsection{Thinning dataset}
-The main difference with the spam problem is that we have transformed the dataset of the functions in such a way as not to take all the instructions and operands inside, but limiting ourselves to taking the {\em mnemonics} of the assembly instructions and in addition we have selected {\em memory accesses} and {\em register accesses}. This choices are justified by the fact that the set of all instructions is unbounded but if we consider only mnemonics the set is smaller. Memory and register accesses are important because when a compiler optimizes a function it tries to reduce the memory accesses and to use as much as possible the registers that are faster then memory.
+The main difference with the spam problem is that we have transformed the dataset of the functions in such a way as not to take all the instructions and operands inside, but limiting ourselves to taking the {\em mnemonics} of the assembly instructions and, in addition, we have selected {\em memory accesses} and {\em register accesses}. These choices are justified by the fact that the set of all instructions is unbounded but if we consider only mnemonics the set is smaller. Memory and register accesses are important because when a compiler optimizes a function it tries to reduce the memory accesses and to use as much as possible the registers, which are faster than the memory.
 
 To extract memory accesses we based on four key word:
 \begin{itemize}
@@ -115,17 +115,17 @@ The list of features can be processed like a list of words in a document. For th
 ['cmovae', 'cmovae eax', 'cmovae eax edx', 'cmp', 'cmp rdi', 'cmp rdi rsi', 'dl', 'dl cmovae', 'dl cmovae eax', 'dword', 'dword seta', 'dword seta dl', 'eax', 'eax dword', 'eax dword seta', 'eax edx', 'eax edx ret', 'edx', 'edx cmp', 'edx cmp rdi', 'edx edx', 'edx edx cmp', 'edx ret', 'mov', 'mov eax', 'mov eax dword', 'rdi', 'rdi rsi', 'rdi rsi mov', 'ret', 'rsi', 'rsi mov', 'rsi mov eax', 'seta', 'seta dl', 'seta dl cmovae', 'xor', 'xor edx', 'xor edx edx']
 \end{quote}
 
-In our project as a first attempt we try with 1-grams mode but as we will see it not perform very well, then swapping to (1, 3)-grams we have really achieved pretty results. Note that, as you can see from the output, for a very large dataset the number of features, with (1, 3)-grams, can be a very high number, for this reason we only consider the top 10000 features ordered by term frequency across the corpus.
+In our project as a first attempt, we try with 1-grams mode but as we will see it not perform very well, then swapping to (1, 3)-grams we have achieved pretty results. Note that, as you can see from the output, for a very large dataset the number of features, with (1, 3)-grams, can be a very high number, for this reason, we only consider the top 10000 features ordered by term frequency across the corpus.
 
-Furthermore for the extraction we choose a precise vectorizer: {\em Tf-Idf Vectorizer}. This object convert a collection of raw documents to a matrix of TF-IDF features. Tf-idf is the short form of {\em term frequency–inverse document frequency}, it doesn't count the recorrence of a word in a certain row but is a numerical statistic that reflect how important a word is in a document.
+Furthermore, for the extraction, we choose a precise vectorizer: {\em Tf-Idf Vectorizer}. This object converts a collection of raw documents into a matrix of TF-IDF features. Tf-idf is the short form of {\em term frequency-inverse document frequency}, it doesn't count the recurrence of a word in a certain row but is a numerical statistic that reflects how important a word is in a document.
 
-The function can be split into two factors: the first factor of the function is the number of terms in the document. In general, this number is divided by the length of the document to prevent that longer documents being privileged.
+The function can be split into two factors: the first factor of the function is the number of terms in the document. In general, this number is divided by the length of the document to prevent longer documents being privileged.
 
 \bigskip
 $tf_{i,j} = \displaystyle \frac {n_{i,j}}{|d_j|} $
 \bigskip
 
-where $n_{i,j}$ is the number of occurrences of the term {\em i} in the document {\em j}, while the denominator is simply the size, expressed in number of terms, of the document {\em j}.
+where $n_{i,j}$ is the number of occurrences of the term {\em i} in the document {\em j}, while the denominator is simply the size, expressed in the number of terms, of the document {\em j}.
 
 The other factor of the function indicates the general importance of the term {\em i} in the collection:
 
@@ -143,12 +143,12 @@ $(tf-idf)_{i,j} = tf_{i,j} * idf_{i}$
 
 Now we have our structure. The last important thing to do is divide the dataset into two parts, one for the training and one for the evaluation. The training set is 2/3 of the original dataset and the evaluation set is the remaining 1/3. We decided also to keep the proportion of the classes the same in both problems.
 
-This division is performed choosing random elements, so running different times the preprocessing phase will affect the final results a bit.
+This division is performed by choosing random elements, so running different times the preprocessing phase will affect the final results a bit.
 
 \section{Model}
-To get to the final result we explored three different models: {\em Bernoulli Naive Bayes}, {\em Multinomial Naive Bayes}, and finally {\em Support Vector Machine with Linear kernel}. In the following sections we explaines how these models works and then we will discuss about the evaluation.
+To get to the final result we explored three different models: {\em Bernoulli Naive Bayes}, {\em Multinomial Naive Bayes}, and finally {\em Support Vector Machine with Linear kernel}. In the following sections, we explain how these models work and then we will discuss the evaluation.
 \subsection{Naive Bayes Classifiers}
-The first chosen model is the {\em Naive Bayes classifier}, a probabilistic model used mainly for text classification. In this model a document is viewed as a collection of words. As we said before the list of features can be processed like a list of words in a document without losing information, so this model is suitable for our problem.
+The first chosen model is the {\em Naive Bayes classifier}, a probabilistic model used mainly for text classification. In this model, a document is viewed as a collection of words. As we said before the list of features can be processed like a list of words in a document without losing information, so this model is suitable for our problem.
 
 In our case we divided the problems, in the first we have two classes $c_1$ and $c_2$, respcetively {\em High} and {\em Low} optimization, in the second we have three classes $c_1$, $c_2$ and $c_3$ as {\em "gcc"}, {\em "icc"} and {\em "clang"} .
 
@@ -191,23 +191,23 @@ With $D_c$ defined as the collection of documents in the training set of class $
 The additional $1$ and $k$ (the cardinality of the vocabulary) are the solutions to the zero-frequency problem.
 
 \subsection{Support Vector Machine}
-Here we are in the family of the Linear Classification Models. The basic idea of this type of models is that the instances in a dataset (e.g. binary) are {\em linearly separable} if exist a {\em linear function} (hyperplane) such that the instance space is divided in two regions, in one you find only positive examples in the other only negative ones. Support Vector Machine is a solution for the problem above and it is more sophisticated then the Naive Bayes.
+Here we are in the family of the Linear Classification Models. The basic idea of this type of models is that the instances in a dataset (e.g. binary) are {\em linearly separable} if exist a {\em linear function} (hyperplane) such that the instance space is divided into two regions, in one you find only positive examples in the other only negative ones. Support Vector Machine is a solution for the problem above and it is more sophisticated than the Naive Bayes.
 
-SVM is a method in which we don’t want to find a line that completely divides instances simply, but which does it in the best way. We want a line that guarantees the maximum distance between points of the two classes from it.
+SVM is a method in which we don’t want to find a line that divides instances simply, but which does it in the best way. We want a line that guarantees the maximum distance between points of the two classes from it.
 
 So in Support Vector Machine we always look for 2 things:
 \begin{itemize}
 \item Setting a larger margin
 \item Lowering misclassification rate
 \end{itemize}
-Now the problem is that this two things are kind of contradictory. If we increase margin, we will end up getting a high misclassfication rate on the other hand if we decrease a margin, we will end up getting a lower misclassification rate. The answer is parameter C.
+Now the problem is that these two things are kind of contradictory. If we increase margin, we will end up getting a high misclassification rate on the other hand if we decrease a margin, we will end up getting a lower misclassification rate. The answer is parameter C.
 
-C is the penalty parameter of the error term. It controls the trade off between smooth decision boundary and classifying the training points correctly. Increasing C values may lead to overfitting the training data.
+C is the penalty parameter of the error term. It controls the trade-off between smooth decision boundaries and classifying the training points correctly. Increasing C values may lead to overfitting the training data.
 
 Another key point for a better use of SVM are the {\em Kernel functions}. These selects the type of hyperplane used to separate the data. Using {\em linear} kernel will use a linear hyperplane. Then we have kernel like {\em rbf} or {\em poly} that uses a 'non linear' hyperplane for the classification.
 \begin{figure}[!ht]
-  \includegraphics[width=1\textwidth]{pic1}
-  \label{fig:Example of SVM}
+ \includegraphics[width=1\textwidth]{pic1}
+ \label{fig:Example of SVM}
 \end{figure}
 \newline
 For our problem we use Support Vector Machine with Linear Kernel and for penalty parameter we set the standard value $C = 1$ because it give the best performance.
@@ -215,7 +215,7 @@ For our problem we use Support Vector Machine with Linear Kernel and for penalty
 Now that we have a clearer overview of the methods we have used for our problem, we will discuss the evaluation of the results.
 
 \section{Evaluation}
-In order to perform a better classification, we evaluated the performance of training the model using two different features: {\em 1-gram} and {\em 3-grams}.
+To perform a better classification, we evaluated the performance of training the model using two different features: {\em 1-gram} and {\em 3-grams}.
 
 The output parameters that we considered for the evaluation are the following \footnote{Legend: TP = true positives, TN = true negatives, FP = false positives, FN = false negatives}:
 
@@ -231,85 +231,85 @@ The output parameters that we considered for the evaluation are the following \f
 Furthermore we also based our analysis in the results posted by the {\em Confusion Matrix} that represents in each entry how many instances of class $C_i$
 is misclassified as an element of class $C_j$. So, the main diagonal contains the true positive and true negative respectively for each class.
 \begin{figure}[!ht]
-  \includegraphics[width=1\textwidth]{pic2}
-  \label{fig: Confusion Matrix}
+ \includegraphics[width=1\textwidth]{pic2}
+ \label{fig: Confusion Matrix}
 \end{figure}
 \newpage
 
-In the following sections we analyze the results and how we arrived at the final choice of the model. We divided the discussion, first we analyze the 1-gram feature and we will show why we decided to change strategy and use the 3-grams feature.
+In the following sections, we analyze the results and how we arrived at the final choice of the model. We divided the discussion, first we analyze the 1-gram feature and we will show why we decided to change strategy and use the 3-grams feature.
 
 \subsection{1-gram feature}
-This type of feature extraction take only the words inside the functions and don't consider the order, for this reason are very few, about 400 features. As a first attempt we try with the Bernoulli Naive Bayes and Multinomial Naive Bayes. The results for our classification problems are the following:
+This type of feature extraction takes only the words inside the functions and doesn't consider the order, for this reason, are very few, about 400 features. As a first attempt, we try with the Bernoulli Naive Bayes and Multinomial Naive Bayes. The results for our classification problems are the following:
 \begin{figure}[!ht]
-  \includegraphics[width=1\textwidth]{pic3}
-  \label{fig: Bernoulli with 1-gram}
+ \includegraphics[width=1\textwidth]{pic3}
+ \label{fig: Bernoulli with 1-gram}
 \end{figure}
 
 \begin{figure}[!ht]
-  \includegraphics[width=1\textwidth]{pic4}
-  \label{fig: Multinomial with 1-gram}
+ \includegraphics[width=1\textwidth]{pic4}
+ \label{fig: Multinomial with 1-gram}
 \end{figure}
 \newpage
 
-We stopped the experimentation here due to the very low accuracy. Note that the accuracy metric is not very effective for the evaluation of the optimization detection because we have an unbalanced ditribution and for this reason we pay more attention in the False Positive Rate and False Negative Rate. In addition False Positive Rate is a key measure and must be maintained as low as possible.
+We stopped the experimentation here due to the very low accuracy. Note that the accuracy metric is not very effective for the evaluation of the optimization detection because we have an unbalanced distribution and for this reason, we pay more attention to the False Positive Rate and False Negative Rate. Besides, False Positive Rate is a key measure and must be maintained as low as possible.
 
-These models with these features seems to classify a High optimization as a Low too often and also in the cases of the compiler detection the numbers of misclassification are very high.
+These models with these features seem to classify a High optimization as a Low too often and also in the cases of the compiler detection the numbers of misclassification are very high.
 
-Furthermore as we can see in the picture above the results of the optimization classification with Multinomial are very bad because for the H class we have
+Furthermore, as we can see in the picture above the results of the optimization classification with Multinomial are very bad because for the H class we have
 $F1-score = 0,29$ and $Recall = 0,18$ this means that of all the functions that have an high optimization this model ranks very few.
 
 To improve performance we first decided to improve features extraction and we analyze the results with the same models.
 
 \subsection{3-grams feature}
-This type of feature extraction  making more words a single feature and consider the order, for this reason the number of features is very high but we only consider the top 10000 features ordered by term frequency across the corpus.
-In general, the multinomial variant is better than the bernoulli but we tried anyway to confirm this trend also for this case.
+This type of feature extraction making more words a single feature and consider the order, for this reason, the number of features is very high but we only consider the top 10000 features ordered by term frequency across the corpus.
+In general, the multinomial variant is better than Bernoulli but we tried anyway to confirm this trend also for this case.
 Using the multinomial, the results associated with each set are:
 
 \begin{figure}[!ht]
-  \includegraphics[width=1\textwidth]{pic5}
-  \label{fig: Bernoulli and Multinomial with 3-grams}
+ \includegraphics[width=1\textwidth]{pic5}
+ \label{fig: Bernoulli and Multinomial with 3-grams}
 \end{figure}
 
-As we can see with BernoulliNB and 3-grams we slightly improve our result but as we expected with MultinomialNB the results start to be really good. Analyze it.
-About the compiler detection we have an accuracy of 0,92 and this is a relly good result because it ensure a low value for the FPR. Instead for optimization detection the result is still a bit low. We report below the FP-rate and FN-rate and we continue our analysis on this parameters because Precision and Recall can be easily related to FPR and FNR, in fact, recall is simply 1 - FNR and the precision is higher with low FPR values.
+As we can see with BernoulliNB and 3-grams we slightly improve our result but as we expected with MultinomialNB the results start to be good. Analyze it.
+About the compiler detection, we have an accuracy of 0,92 and this is a really good result because it ensures a low value for the FPR. Instead, for optimization detection, the result is still a bit low. We report below the FP-rate and FN-rate and we continue our analysis on these parameters because Precision and Recall can be easily related to FPR and FNR, indeed recall is simply 1 - FNR and the precision is higher with low FPR values.
 
 \bigskip
 \begin{tabular}{ | l | l | l | }
-    \hline
-    \textbf{Classes} & \textbf{FP-rate} & \textbf{FN-rate} \\ \hline
-    H & 0,19648 & 0,21813 \\ \hline
-    L & 0,21813 & 0,19648 \\ \hline
+ \hline
+ \textbf{Classes} & \textbf{FP-rate} & \textbf{FN-rate} \\ \hline
+ H & 0,19648 & 0,21813 \\ \hline
+ L & 0,21813 & 0,19648 \\ \hline
 \end{tabular}
 \bigskip
 
-At this point significative better results can be achieved only using a more sophisticated model and for this reason we choose Linear Support Vector Machine.
+At this point, significative better results can be achieved only using a more sophisticated model and for this reason, we choose Linear Support Vector Machine.
 
 \subsection{Linear SVM}
 As a last attempt to improve our performances we use Support Vector Machine with Linear kernel, standard penalty parameter $C = 1$ and 3-grams. Goes to show the results.
 
 \begin{figure}[!ht]
-  \includegraphics[width=1\textwidth]{pic6}
-  \label{fig: Linear SVM with 3-grams}
+ \includegraphics[width=1\textwidth]{pic6}
+ \label{fig: Linear SVM with 3-grams}
 \end{figure}
 
 \bigskip
 \begin{tabular}{ | l | l | l | }
-    \hline
-    \textbf{Classes} & \textbf{FP-rate} & \textbf{FN-rate} \\ \hline
-    H & 0,10962 & 0,15925 \\ \hline
-    L & 0,15925 & 0,10962 \\ \hline
-    CLANG & 0,02609 & 0,04080 \\ \hline
-    GCC & 0,02400 & 0,04229 \\ \hline
-    ICC & 0,01604 & 0,04920 \\ \hline
+ \hline
+ \textbf{Classes} & \textbf{FP-rate} & \textbf{FN-rate} \\ \hline
+ H & 0,10962 & 0,15925 \\ \hline
+ L & 0,15925 & 0,10962 \\ \hline
+ CLANG & 0,02609 & 0,04080 \\ \hline
+ GCC & 0,02400 & 0,04229 \\ \hline
+ ICC & 0,01604 & 0,04920 \\ \hline
 \end{tabular}
 \bigskip
 
-Considering this measures, this model is for sure the best than the others in fact we have improved the compiler detection performance even more, but the most convincing result is the fact that we have increased the optimization detection rates bringing them to much better values. As you can see we have taken the FPR from 0.19 to 0.10 for H and from 0.21 to 0.15 for L.
+Considering these measures, this model is for sure the best than the others, indeed, we have improved the compiler detection performance even more, but the most convincing result is the fact that we have increased the optimization detection rates bringing them to much better values. As you can see we have taken the FPR from 0.19 to 0.10 for H and from 0.21 to 0.15 for L.
 
-At this point we finish our analysis here and we can draw our conclusions.
+At this point, we finish our analysis here and we can draw our conclusions.
 
 \section{Conclusion}
-From these results we could see the fact that SVM is certainly one of the best models, therefore continue to test other models probably wouldn't be worth. The thing that surely can improve our results even more is the extraction of features. In fact at the beginning we showed that we based our analysis only perform the mnemonics of function and the memory and register accesses. Surely by investigating more about the behavior of the various compilers and the many assembly instructions we could find better solutions. For now we end our experience here.
+From these results we could see the fact that SVM is certainly one of the best models, therefore continue to test other models probably wouldn't be worth it. The thing that surely can improve our results, even more, is the extraction of features. Indeed, in the beginning, we showed that we based our analysis only perform the mnemonics of function and the memory and register accesses. Surely by investigating more about the behavior of the various compilers and the many assembly instructions we could find better solutions. For now, we end our experience here.
 
 Note that we perform the {\em Blind-dataset} with the last combination: Linear SVM with 3-grams.
 
@@ -319,15 +319,15 @@ Note that we perform the {\em Blind-dataset} with the last combination: Linear S
 
 \bibitem{wiki}
 {\em SKlearn Documentation}. 
-  \verb|https://scikit-learn.org/stable/documentation.html|
+ \verb|https://scikit-learn.org/stable/documentation.html|
 
 \bibitem{nist}
 C. Bishop
-  {\em Pattern Recognition and Machine Learning}.
+ {\em Pattern Recognition and Machine Learning}.
 
-  \bibitem{nist}
+ \bibitem{nist}
 {\em Wikipedia - Tf-Idf}.
-  \verb|https://en.wikipedia.org/wiki/Tf–idf|
+ \verb|https://en.wikipedia.org/wiki/Tf–idf|
 
 \end{thebibliography}
 \end{document}
